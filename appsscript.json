@@ -5,7 +5,7 @@
     "https://www.googleapis.com/auth/gmail.modify"
   ],
   "gmail": {
-    "name": "Gmail Add-on PhishSense",
+    "name": "Gmail Add-on PhishSense Git Test",
     "logoUrl": "https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed",
     "contextualTriggers": [
       {
