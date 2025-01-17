@@ -109,11 +109,12 @@ function toggleLabel(e) {
  * @param {GmailLabel[]} labelsObjects A GmailLabel object array.
  * @return {string[]} An array of labels names as strings.
  */
-function getLabelArray(labelsObjects) {
-  var labels = [];
-  for (var i = 0; i < labelsObjects.length; i++) {
-    labels[i] = labelsObjects[i].getName();
-  }
+ function getLabelArray(labelsObjects) {
+  const labels = labelsObjects.map(label => label.getName());
   labels.sort();
   return labels;
 }
+
+module.exports = { getLabelArray };
+
+
