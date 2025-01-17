@@ -1,8 +1,7 @@
-node_modules/
-package.json
-package-lock.json
-tests/
-.github/
-README.md
-LICENSE
-*.test.js
+# Ignore everything by default
+**
+
+# Allow appsscript.json and Code.js
+!appsscript.json
+!Code.js
+
