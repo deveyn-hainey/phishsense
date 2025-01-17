@@ -57,3 +57,8 @@ clasp pull
 
 Open the Apps Script Editor:
 clasp open
+
+6. 6. Run Tests Locally (This is for the GitHub Workflow)
+Before pushing changes, test everything locally to confirm it works:
+run:
+npm test
