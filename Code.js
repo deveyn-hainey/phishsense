@@ -57,7 +57,7 @@ function buildAddOn(e) {
   // Build the main card after adding the section.
   var card = CardService.newCardBuilder()
     .setHeader(CardService.newCardHeader()
-    .setTitle('PhishSenseGitTest')
+    .setTitle('PhishSenseSmile')
     .setImageUrl('https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed'))
     .addSection(section)
     .build();
