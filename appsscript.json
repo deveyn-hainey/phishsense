@@ -2,10 +2,11 @@
   "oauthScopes": [
     "https://www.googleapis.com/auth/gmail.addons.execute",
     "https://www.googleapis.com/auth/gmail.addons.current.message.metadata",
-    "https://www.googleapis.com/auth/gmail.modify"
+    "https://www.googleapis.com/auth/gmail.modify",
+    "https://www.googleapis.com/auth/bigquery"
   ],
   "gmail": {
-    "name": "Gmail Add-on PhishSense Git Test Smile",
+    "name": "Add-on PhishSense b",
     "logoUrl": "https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed",
     "contextualTriggers": [
       {
@@ -18,5 +19,18 @@
     ],
     "primaryColor": "#4285F4",
     "secondaryColor": "#4285F4"
+  },
+  "webapp": {
+    "executeAs": "USER_ACCESSING",
+    "access": "ANYONE"
+  },
+  "dependencies": {
+    "enabledAdvancedServices": [
+      {
+        "userSymbol": "BigQuery",
+        "version": "v2",
+        "serviceId": "bigquery"
+      }
+    ]
   }
 }
