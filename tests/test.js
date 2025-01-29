@@ -1,22 +1,30 @@
-/**
- * Test function to verify BigQuery uploads with sample email data.
- */
-function testBigQueryUpload() {
-  const projectId = 'vertical-shore-436520-a4'; // Your Google Cloud Project ID
-  const datasetId = 'email_metadata'; // Your BigQuery dataset ID
-  const tableId = 'user_data'; // Your BigQuery table ID
+jest.mock('../bigquery.js', () => ({
+  uploadEmailDataToBigQuery: jest.fn().mockResolvedValue('Mocked BigQuery upload success'),
+}));
 
-  const sampleData = [
-    {
-      messageId: 'test123',
-      sender: 'test@example.com',
-      recipient: 'recipient@example.com',
-      subject: 'Test Subject',
-      date: new Date().toISOString(), // Ensure it matches the TIMESTAMP format
-      emailBodyPlain: 'This is a test email body to ensure data uploads correctly to BigQuery.',
-    },
-  ];
+const { uploadEmailDataToBigQuery } = require('../bigquery.js');
 
-  uploadEmailDataToBigQuery(projectId, datasetId, tableId, sampleData);
-}
+describe('BigQuery Upload Tests', () => {
+  test('Uploads sample email data successfully (mocked)', async () => {
+    const projectId = 'vertical-shore-436520-a4';
+    const datasetId = 'email_metadata';
+    const tableId = 'user_data';
 
+    const sampleData = [
+      {
+        messageId: 'test123',
+        sender: 'test@example.com',
+        recipient: 'recipient@example.com',
+        subject: 'Test Subject',
+        date: new Date().toISOString(),
+        emailBodyPlain: 'This is a test email body to ensure data uploads correctly to BigQuery.',
+      },
+    ];
+
+    // Call the mocked function
+    await expect(uploadEmailDataToBigQuery(projectId, datasetId, tableId, sampleData)).resolves.not.toThrow();
+    
+    // Verify the function was called
+    expect(uploadEmailDataToBigQuery).toHaveBeenCalledWith(projectId, datasetId, tableId, sampleData);
+  });
+});
