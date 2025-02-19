@@ -1,65 +1,50 @@
 function scanEmail(e) {
   try {
-    // 1) Re-grant access to the current message
-    var accessToken = e.messageMetadata.accessToken; 
-    GmailApp.setCurrentMessageAccessToken(accessToken);
+    var messageId = e.parameters && e.parameters.messageId;
+    if (!messageId) {
+      throw new Error("No messageId passed to scanEmail.");
+    }
 
-    // 2) Grab the messageId passed by buildAddOn
-    var messageId = e.commonEventObject.parameters.messageId;
+    // Grant access again for safety
+    GmailApp.setCurrentMessageAccessToken(e.messageMetadata.accessToken);
+
+    // Get the message
     var message = GmailApp.getMessageById(messageId);
-
-    // 3) Prepare the data for BigQuery/AI
-    var emailBodyPlain = message.getPlainBody() || "No plain text body available.";
-    var emailData = [{
+    var emailData = {
       messageId: messageId,
       sender: message.getFrom(),
       recipient: message.getTo(),
       subject: message.getSubject(),
       date: message.getDate().toISOString(),
-      emailBodyPlain: emailBodyPlain
-    }];
+      emailBodyPlain: message.getPlainBody() || "No plain text."
+    };
 
-    // (Optional) Upload to BigQuery
+    // 1) Analyze with Vertex AI
+    var aiResponse = analyzeEmailWithVertexAI(emailData.emailBodyPlain);
+    var explanation = parseVertexAI(aiResponse);
+
+    // 2) Store the explanation in user properties
+    storeAiAnalysisToCache(explanation);
+
+    // 3) (optional) Upload to BigQuery
     uploadEmailDataToBigQuery(
-      "vertical-shore-436520-a4", // projectId
-      "email_metadata",          // datasetId
-      "user_data",               // tableId
-      emailData
+      "vertical-shore-436520-a4",    // e.g. "vertical-shore-436520-a4"
+      "email_metadata",    // e.g. "email_metadata"
+      "user_data",      // e.g. "user_data"
+      [ emailData ]
     );
 
-    // 4) Call Vertex AI and parse the result
-    var rawAIResponse = analyzeEmailWithVertexAI(emailBodyPlain);
-    var analysisRaw = parseVertexAI(rawAIResponse); 
-    var analysisResult = String(analysisRaw); // <--- ensure it’s a string
+    // 4) Navigate to the AI Explanation tab
+    var nav = CardService.newNavigation()
+      .updateCard(buildAiExplanationCard());
 
-    // 6) Build a new section with the AI outcome
-    var analysisSection = CardService.newCardSection()
-      .setHeader("<b>AI Phishing Analysis</b>")
-      .addWidget(CardService.newTextParagraph().setText("<b>Explanation: </b>" + analysisResult));
-
-    // 7) Build a new card that replaces the old one
-    var card = CardService.newCardBuilder()
-      .setHeader(
-        CardService.newCardHeader()
-          .setTitle("PhishSense Scan Results")
-          .setImageUrl("https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed")
-      )
-      .addSection(analysisSection)
-      .build();
-
-    // 8) Return an ActionResponse that pushes the new card
     return CardService.newActionResponseBuilder()
-      .setNavigation(
-        CardService.newNavigation().pushCard(card)
-      )
+      .setNavigation(nav)
       .build();
 
   } catch (error) {
     Logger.log("Error in scanEmail: " + error.message);
-    return CardService.newActionResponseBuilder()
-      .setNavigation(
-        CardService.newNavigation().pushCard(showErrorCard(error.message))
-      )
-      .build();
+    Logger.log("Stack: " + error.stack);
+    return showErrorCard(error.message);
   }
 }
