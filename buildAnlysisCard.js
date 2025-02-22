@@ -1,46 +1,58 @@
-function buildAnalysisCard() {
-  // This header has the “open in new tab” link
+function buildExplanationsCard(e) {
   var header = CardService.newCardHeader()
     .setTitle("PhishSense")
-    .setImageUrl("https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed")
-    .setOpenLink(
-      // Clicking the icon opens a phishing info page
-      CardService.newOpenLink()
-        .setUrl("https://your-phishing-info-page.com")
-        .setOpenAs(CardService.OpenAs.FULL_SIZE)
-    );
+    .setImageUrl("https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed");
 
   // Tab bar
-  var tabSection = buildTabBar("analysis"); // highlight “AI Output” tab
+  var tabSection = buildTabBar("explanations");
 
-  // Main section for showing AI analysis
-  var analysisSection = CardService.newCardSection()
-    .setHeader("<b>Email Analysis</b>");
+  // Main content
+  var contentSection = CardService.newCardSection()
+    .setHeader("Explanations");
 
-  // Retrieve previously stored AI explanation from user properties
+  // Suppose we store the AI explanation in user props
   var explanation = getAiAnalysisFromCache();
   if (!explanation) {
-    // If no explanation stored yet, show an empty-state illustration
-    analysisSection.addWidget(
-      CardService.newImage().setImageUrl("https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed")
+    // Show an empty state illustration
+    contentSection.addWidget(
+      CardService.newImage()
+        .setImageUrl("https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed")  // e.g. big placeholder image
+        .setAltText("No explanations yet")
     );
-    analysisSection.addWidget(
+    contentSection.addWidget(
       CardService.newTextParagraph()
-        .setText("No analysis yet. Please scan an email first.")
+        .setText("No explanations yet\nPhishSense creates AI explanations so you never worry phishing")
     );
+
+    // A “Scan to Start” button (if you want scanning from here too)
+    // We pass the same messageId if available
+    var messageId = (e && e.messageMetadata) ? e.messageMetadata.messageId : "";
+    var scanAction = CardService.newAction()
+      .setFunctionName("scanEmail")
+      .setParameters({ messageId: messageId });
+
+    var scanButton = CardService.newTextButton()
+      .setText("Scan to Start")
+      .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
+      .setBackgroundColor("#4285F4")
+      .setOnClickAction(scanAction);
+
+    contentSection.addWidget(scanButton);
+
   } else {
-    // If we have an explanation, show it
-    analysisSection.addWidget(
+    // Show the AI explanation
+    contentSection.addWidget(
       CardService.newTextParagraph()
         .setText(explanation)
     );
   }
 
-  // Build final card
   var card = CardService.newCardBuilder()
     .setHeader(header)
     .addSection(tabSection)
-    .addSection(analysisSection)
+    .addSection(contentSection)
     .build();
+
   return card;
 }
+
