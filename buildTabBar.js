@@ -1,11 +1,12 @@
 function buildTabBar(activeTab) {
-  var tabSection = CardService.newCardSection();
-
-  // --- "In this thread" button ---
   var threadAction = CardService.newAction()
     .setFunctionName("switchTab")
     .setParameters({ tab: "thread" });
+  var explanationAction = CardService.newAction()
+    .setFunctionName("switchTab")
+    .setParameters({ tab: "explanations" });
 
+  // "In this thread"
   var threadBtn = CardService.newTextButton()
     .setText("In this thread")
     .setOnClickAction(threadAction)
@@ -13,33 +14,28 @@ function buildTabBar(activeTab) {
 
   if (activeTab === "thread") {
     threadBtn
-      .setText("In this thread (active)")
+      .setText("In this thread")
       .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-      .setBackgroundColor("#4285F4"); // Google blue
+      .setBackgroundColor("#b51887"); // pink
   }
 
-  // --- "AI Explanation" button ---
-  var analysisAction = CardService.newAction()
-    .setFunctionName("switchTab")
-    .setParameters({ tab: "analysis" });
-
-  var analysisBtn = CardService.newTextButton()
-    .setText("AI Explanation")
-    .setOnClickAction(analysisAction)
+  // "Explanations"
+  var explanationBtn = CardService.newTextButton()
+    .setText("Explanations")
+    .setOnClickAction(explanationAction)
     .setTextButtonStyle(CardService.TextButtonStyle.TEXT);
 
-  if (activeTab === "analysis") {
-    analysisBtn
-      .setText("AI Explanation (active)")
+  if (activeTab === "explanations") {
+    explanationBtn
+      .setText("Explanations")
       .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-      .setBackgroundColor("#4285F4");
+      .setBackgroundColor("#b51887");
   }
 
-  // Place them side by side
+  // Put both in a single row
   var buttonSet = CardService.newButtonSet()
     .addButton(threadBtn)
-    .addButton(analysisBtn);
+    .addButton(explanationBtn);
 
-  tabSection.addWidget(buttonSet);
-  return tabSection;
+  return CardService.newCardSection().addWidget(buttonSet);
 }

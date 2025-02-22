@@ -1,13 +1,11 @@
 function switchTab(e) {
-  var tabToShow = e.parameters.tab || "readEmail";
-
+  var tabToShow = e.parameters.tab || "thread";
   var nav = CardService.newNavigation();
-  if (tabToShow === "aiExplanation") {
-    nav.updateCard(buildAiExplanationCard());
+  if (tabToShow === "explanations") {
+    nav.updateCard(buildExplanationsCard(e));
   } else {
-    nav.updateCard(buildReadEmailCard(e));
+    nav.updateCard(buildThreadCard(e));
   }
-
   return CardService.newActionResponseBuilder()
     .setNavigation(nav)
     .build();

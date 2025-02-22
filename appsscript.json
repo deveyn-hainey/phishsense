@@ -8,7 +8,7 @@
     "https://www.googleapis.com/auth/cloud-platform"
   ],
   "gmail": {
-    "name": "Add-on PhishSense",
+    "name": "PhishSense",
     "logoUrl": "https://drive.google.com/uc?export=view&id=12bNfhfTQ_pNQtVQkPrzSkltX4HGVBFed",
     "contextualTriggers": [
       {
@@ -19,8 +19,8 @@
     "openLinkUrlPrefixes": [
       "https://mail.google.com/"
     ],
-    "primaryColor": "#4285F4",
-    "secondaryColor": "#4285F4"
+    "primaryColor": "#b51887",
+    "secondaryColor": "#b51887"
   },
   "urlFetchWhitelist": [
     "https://us-central1-aiplatform.googleapis.com/v1/projects/vertical-shore-436520-a4/locations/us-central1/publishers/google/models/gemini-1.0-pro-002:streamGenerateContent"
