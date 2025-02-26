@@ -14,9 +14,11 @@ function analyzeEmailWithVertexAI(emailContent) {
         role: "user",
         parts: [{
           text: (
-            "Analyze the following email message. Classify it as 'Phishing' or 'Safe', " +
-            "and give a brief reasoning. Please respond with: [Phishing or Safe] " +
-            "then 'explain:' [some reasoning].\n\n" +
+            "Analyze the following email message. First you must classify it as 'Phishing' or 'Safe', " +
+            "and give a brief reasoning. The reasoning should be formatted as follows: Summary: Which gives a concise answer"+
+            " if the email was phishing or safe. Learning Section: Which tell the user how the email is idenitfied as" +
+            " Safe or Phishing. " +
+            "bold the labels Summary: and Learning Section. Also bold any bullet point topics that are given in the sections "+
             "EMAIL:\n" + emailContent
           )
         }]
