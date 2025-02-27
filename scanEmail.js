@@ -1,15 +1,14 @@
 function scanEmail(e) {
   try {
-    var messageId = e.parameters && e.parameters.messageId;
+    var messageId = e.parameters.messageId || getLastScannedMessageId(); // Use cached ID if missing
+
     if (!messageId) {
-      throw new Error("No messageId passed to scanEmail.");
+      throw new Error("No messageId provided and no previous scan found.");
     }
 
-    // Grant access again for safety
     GmailApp.setCurrentMessageAccessToken(e.messageMetadata.accessToken);
-
-    // Get the message
     var message = GmailApp.getMessageById(messageId);
+
     var emailData = {
       messageId: messageId,
       sender: message.getFrom(),
@@ -19,24 +18,15 @@ function scanEmail(e) {
       emailBodyPlain: message.getPlainBody() || "No plain text."
     };
 
-    // 1) Analyze with Vertex AI
+    // Run AI analysis to get a fresh response for this email
     var aiResponse = analyzeEmailWithVertexAI(emailData.emailBodyPlain);
     var explanation = parseVertexAI(aiResponse);
 
-    // 2) Store the explanation in user properties
-    storeAiAnalysisToCache(explanation);
+    // Store the new AI explanation & message ID in cache
+    storeAiAnalysisToCache(explanation, messageId);
 
-    // 3) (optional) Upload to BigQuery
-    uploadEmailDataToBigQuery(
-      "vertical-shore-436520-a4",    // e.g. "vertical-shore-436520-a4"
-      "email_metadata",    // e.g. "email_metadata"
-      "user_data",      // e.g. "user_data"
-      [ emailData ]
-    );
-
-    // 4) Navigate to the AI Explanation tab
-    var nav = CardService.newNavigation()
-      .updateCard(buildAiExplanationCard());
+    // Update the UI to show the new explanation
+    var nav = CardService.newNavigation().updateCard(buildScannedEmailCard(e));
 
     return CardService.newActionResponseBuilder()
       .setNavigation(nav)
@@ -44,7 +34,11 @@ function scanEmail(e) {
 
   } catch (error) {
     Logger.log("Error in scanEmail: " + error.message);
-    Logger.log("Stack: " + error.stack);
-    return showErrorCard(error.message);
+
+    // If an error occurs, continue showing the last successful scan result
+    var nav = CardService.newNavigation().updateCard(buildScannedEmailCard(e));
+    return CardService.newActionResponseBuilder()
+      .setNavigation(nav)
+      .build();
   }
 }
