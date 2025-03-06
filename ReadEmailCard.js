@@ -20,6 +20,8 @@ function buildReadEmailSection(e) {
   var dateStr = message.getDate().toISOString();
   var preview = message.getPlainBody().substring(0, 300);
 
+  uploadEmailDataToBigQuery(emailData);
+  
   section.addWidget(
     CardService.newTextParagraph().setText(
       "<b>Sender:</b> " + sender +
@@ -34,17 +36,6 @@ function buildReadEmailSection(e) {
     )
   );
 
-  // "Scan Email" button
-  var scanAction = CardService.newAction()
-    .setFunctionName("scanEmail")
-    .setParameters({ messageId: messageId });
-
-  var scanButton = CardService.newTextButton()
-    .setText("Scan Email")
-    .setTextButtonStyle(CardService.TextButtonStyle.FILLED)
-    .setBackgroundColor("#4285F4")
-    .setOnClickAction(scanAction);
-
-  section.addWidget(scanButton);
-  return section;
+   // upload to bigquery
+  uploadEmailDataToBigQuery(emailData);
 }

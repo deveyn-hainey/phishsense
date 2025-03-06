@@ -16,6 +16,12 @@
         "onTriggerFunction": "buildAddOn"
       }
     ],
+    "universalActions": [
+      {
+        "text": "Open in New Tab",
+        "openLink": "https://deveynnhainey.wixsite.com/deveyn-hainey"
+      }
+    ],
     "openLinkUrlPrefixes": [
       "https://mail.google.com/"
     ],
