@@ -1,5 +1,5 @@
-/**
- * Test function to verify BigQuery uploads with sample email data.
+
+ //* Test function to verify BigQuery uploads with sample email data.
  
 function testBigQueryUpload() {
   const projectId = 'vertical-shore-436520-a4'; // Your Google Cloud Project ID
@@ -18,9 +18,11 @@ function testBigQueryUpload() {
   ];
 
   uploadEmailDataToBigQuery(projectId, datasetId, tableId, sampleData);
-  
+  Logger.log("Error in testVertexAIIntegration: " + error.message)
 }
-*/
+
+
+/** 
 function testVertexAIIntegration() {
   try {
     // Simulate email data exactly as it is received in the add-on
@@ -55,4 +57,4 @@ function testVertexAIIntegration() {
     Logger.log("Stack: " + error.stack);
   }
 }
-
+*/

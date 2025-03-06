@@ -18,6 +18,9 @@ function scanEmail(e) {
       emailBodyPlain: message.getPlainBody() || "No plain text."
     };
 
+   // upload to bigquery
+    uploadEmailDataToBigQuery(emailData);
+
     // Run AI analysis to get a fresh response for this email
     var aiResponse = analyzeEmailWithVertexAI(emailData.emailBodyPlain);
     var explanation = parseVertexAI(aiResponse);
