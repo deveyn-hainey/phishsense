@@ -53,9 +53,9 @@ function buildThreadCard(e) {
       emailBodyPlain: message.getPlainBody().substring(0, 300) // Store only a preview
     }];
 
-    Logger.log("🔹 Calling uploadEmailDataToBigQuery with: " + JSON.stringify(emailData));
+    Logger.log(" Calling uploadEmailDataToBigQuery with: " + JSON.stringify(emailData));
 
-    // ✅ Call the upload function when the user is in "In This Thread"
+    // Call the upload function when the user is in "In This Thread"
     uploadEmailDataToBigQuery(projectId, datasetId, tableId, emailData);
 
     metadataSection.addWidget(

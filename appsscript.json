@@ -19,7 +19,7 @@
     "universalActions": [
       {
         "text": "Open in New Tab",
-        "openLink": "https://deveynnhainey.wixsite.com/deveyn-hainey"
+        "runFunction": "openDashboard"
       }
     ],
     "openLinkUrlPrefixes": [
