@@ -7,7 +7,7 @@ function uploadEmailDataToBigQuery(projectId, datasetId, tableId, emailData) {
   const rows = [];
 
   // Log email data before processing
-  Logger.log("✅ Received email data for BigQuery upload: " + JSON.stringify(emailData));
+  Logger.log("Received email data for BigQuery upload: " + JSON.stringify(emailData));
 
   // Map emailData to rows using a loop
   for (var i = 0; i < emailData.length; i++) {
@@ -26,21 +26,56 @@ function uploadEmailDataToBigQuery(projectId, datasetId, tableId, emailData) {
   }
 
   try {
-    Logger.log("🚀 Preparing to insert email data into BigQuery: " + JSON.stringify(rows));
+    Logger.log("Preparing to insert email data into BigQuery: " + JSON.stringify(rows));
 
     // Insert rows into BigQuery table
     const request = { rows: rows };
     const response = BigQuery.Tabledata.insertAll(request, projectId, datasetId, tableId);
 
-    Logger.log("✅ BigQuery Insert Response: " + JSON.stringify(response));
+    Logger.log("BigQuery Insert Response: " + JSON.stringify(response));
 
     // Check for errors in the response
     if (response.insertErrors && response.insertErrors.length > 0) {
-      Logger.log("❌ Insert Errors: " + JSON.stringify(response.insertErrors));
+      Logger.log("Insert Errors: " + JSON.stringify(response.insertErrors));
     } else {
-      Logger.log("🎉 Email content successfully inserted into BigQuery.");
+      Logger.log("Email content successfully inserted into BigQuery.");
     }
   } catch (err) {
-    Logger.log("❌ Error uploading data to BigQuery: " + err.message);
+    Logger.log("Error uploading data to BigQuery: " + err.message);
   }
 }
+
+function updateClassificationAndExplanationInBigQuery(projectId, datasetId, tableId, messageId, classification, explanation) {
+  if (!messageId) {
+    Logger.log("No messageId provided for BigQuery update.");
+    return;
+  }
+
+  const rows = [{
+    json: {
+      email_id: messageId,
+      classification: classification || "Unknown",
+      explanation: explanation || "No explanation available."
+    }
+  }];
+
+  try {
+    Logger.log(" Updating classification & explanation in BigQuery: " + JSON.stringify(rows));
+
+    const request = { rows: rows };
+    const response = BigQuery.Tabledata.insertAll(request, projectId, datasetId, tableId);
+
+    Logger.log("BigQuery Update Response: " + JSON.stringify(response));
+
+    if (response.insertErrors && response.insertErrors.length > 0) {
+      Logger.log(" Update Errors: " + JSON.stringify(response.insertErrors));
+    } else {
+      Logger.log("Classification & explanation successfully updated in BigQuery.");
+    }
+  } catch (err) {
+    Logger.log("Error updating classification & explanation in BigQuery: " + err.message);
+  }
+}
+
+
+

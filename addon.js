@@ -13,3 +13,15 @@ function buildAddOn(e) {
     return [ buildThreadCard(e) ];
   }
 }
+
+function openDashboard() {
+  var userEmail = Session.getActiveUser().getEmail();  // Get user email
+
+  var dashboardUrl = "https://your-dashboard.web.app/?email=" + userEmail; // No encodeURIComponent
+
+  return CardService.newUniversalActionResponseBuilder()
+    .setOpenLink(CardService.newOpenLink().setUrl(dashboardUrl))
+    .build();
+}
+
+
