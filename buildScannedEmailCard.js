@@ -17,7 +17,7 @@ function buildScannedEmailCard(e) {
     .addSection(explanationSection)
     .build();
 
-  return card;
+  return card; //test
 }
 
 
