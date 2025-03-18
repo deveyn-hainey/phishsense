@@ -1,7 +1,7 @@
 function buildThreadCard(e) {
   const projectId = 'vertical-shore-436520-a4'; // Your Google Cloud Project ID
   const datasetId = 'email_metadata'; // Your BigQuery dataset ID
-  const tableId = 'user_data'; // Your BigQuery table ID
+  const tableId = 'user_data_temp'; // Your BigQuery table ID
 
   var header = CardService.newCardHeader()
     .setTitle("PhishSense")
@@ -50,10 +50,10 @@ function buildThreadCard(e) {
       recipient: message.getTo(),
       subject: message.getSubject(),
       date: message.getDate().toISOString(),
-      emailBodyPlain: message.getPlainBody().substring(0, 300) // Store only a preview
+      emailBodyPlain: message.getPlainBody() 
     }];
 
-    Logger.log(" Calling uploadEmailDataToBigQuery with: " + JSON.stringify(emailData));
+    Logger.log("🔹 Calling uploadEmailDataToBigQuery with: " + JSON.stringify(emailData));
 
     // Call the upload function when the user is in "In This Thread"
     uploadEmailDataToBigQuery(projectId, datasetId, tableId, emailData);

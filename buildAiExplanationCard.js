@@ -36,7 +36,7 @@ function buildAiExplanationCard() {
       updateClassificationAndExplanationInBigQuery(
         "vertical-shore-436520-a4",
         "email_metadata",
-        "user_data",
+        "user_data_temp",
         messageId,
         classification,
         explanation
