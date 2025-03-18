@@ -3,7 +3,7 @@ function parseVertexAI(response) {
     return "Error: Invalid AI response.";
   }
   if (response.error) {
-    return " API Error: " + response.error;
+    return "❌ API Error: " + response.error;
   }
 
   var explanationParts = [];

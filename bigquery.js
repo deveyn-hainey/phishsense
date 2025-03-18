@@ -1,13 +1,10 @@
 function uploadEmailDataToBigQuery(projectId, datasetId, tableId, emailData) {
   if (!emailData || !Array.isArray(emailData) || emailData.length === 0) {
-    Logger.log("❌ No email data provided for BigQuery upload. Function exited.");
+    Logger.log("No email data provided for BigQuery upload. Function exited.");
     return; // Exit the function if emailData is invalid
   }
 
   const rows = [];
-
-  // Log email data before processing
-  Logger.log("Received email data for BigQuery upload: " + JSON.stringify(emailData));
 
   // Map emailData to rows using a loop
   for (var i = 0; i < emailData.length; i++) {
@@ -26,56 +23,44 @@ function uploadEmailDataToBigQuery(projectId, datasetId, tableId, emailData) {
   }
 
   try {
-    Logger.log("Preparing to insert email data into BigQuery: " + JSON.stringify(rows));
-
     // Insert rows into BigQuery table
     const request = { rows: rows };
     const response = BigQuery.Tabledata.insertAll(request, projectId, datasetId, tableId);
-
+    
+    // Log response for debugging
     Logger.log("BigQuery Insert Response: " + JSON.stringify(response));
 
-    // Check for errors in the response
-    if (response.insertErrors && response.insertErrors.length > 0) {
-      Logger.log("Insert Errors: " + JSON.stringify(response.insertErrors));
+    // Check if there are any insertion errors
+    if (response.insertErrors) {
+      Logger.log("Insertion Errors: " + JSON.stringify(response.insertErrors));
     } else {
-      Logger.log("Email content successfully inserted into BigQuery.");
+      Logger.log("Data inserted successfully into BigQuery.");
     }
   } catch (err) {
-    Logger.log("Error uploading data to BigQuery: " + err.message);
+    Logger.log("Error inserting into BigQuery: " + err.toString());
   }
 }
 
-function updateClassificationAndExplanationInBigQuery(projectId, datasetId, tableId, messageId, classification, explanation) {
-  if (!messageId) {
-    Logger.log("No messageId provided for BigQuery update.");
-    return;
-  }
-
-  const rows = [{
-    json: {
-      email_id: messageId,
-      classification: classification || "Unknown",
-      explanation: explanation || "No explanation available."
-    }
-  }];
-
+function insertClassificationAndExplanationInBigQuery(projectId, datasetId, tableId, messageId, classification, explanation) {
   try {
-    Logger.log(" Updating classification & explanation in BigQuery: " + JSON.stringify(rows));
+    // Ensure values are properly escaped
+    messageId = escapeStringForSQL(messageId);
+    classification = escapeStringForSQL(classification);
+    explanation = escapeStringForSQL(explanation);
 
-    const request = { rows: rows };
-    const response = BigQuery.Tabledata.insertAll(request, projectId, datasetId, tableId);
+    // Construct the INSERT query
+    var insertQuery = "INSERT INTO `" + projectId + "." + datasetId + "." + tableId + "` " +
+                      "(messageId, classification, explanation) VALUES ('" + messageId + "', '" + classification + "', '" + explanation + "');";
 
-    Logger.log("BigQuery Update Response: " + JSON.stringify(response));
+    // Execute the query
+    var bigquery = BigQuery;
+    var queryJob = bigquery.query(insertQuery);
 
-    if (response.insertErrors && response.insertErrors.length > 0) {
-      Logger.log(" Update Errors: " + JSON.stringify(response.insertErrors));
-    } else {
-      Logger.log("Classification & explanation successfully updated in BigQuery.");
-    }
-  } catch (err) {
-    Logger.log("Error updating classification & explanation in BigQuery: " + err.message);
+    Logger.log("✅ Successfully inserted classification & explanation into BigQuery.");
+    return queryJob;
+  } catch (error) {
+    Logger.log("❌ Error inserting classification & explanation into BigQuery: " + error.message);
   }
 }
-
 
 

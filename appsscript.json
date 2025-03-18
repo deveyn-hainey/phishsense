@@ -5,7 +5,9 @@
     "https://www.googleapis.com/auth/gmail.modify",
     "https://www.googleapis.com/auth/bigquery",
     "https://www.googleapis.com/auth/script.external_request",
-    "https://www.googleapis.com/auth/cloud-platform"
+    "https://www.googleapis.com/auth/cloud-platform",
+    "https://www.googleapis.com/auth/spreadsheets",
+    "https://www.googleapis.com/auth/gmail.send"
   ],
   "gmail": {
     "name": "PhishSense",
@@ -19,7 +21,7 @@
     "universalActions": [
       {
         "text": "Open in New Tab",
-        "runFunction": "openDashboard"
+        "openLink": "https://deveynnhainey.wixsite.com/deveyn-hainey"
       }
     ],
     "openLinkUrlPrefixes": [

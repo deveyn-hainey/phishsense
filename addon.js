@@ -23,5 +23,3 @@ function openDashboard() {
     .setOpenLink(CardService.newOpenLink().setUrl(dashboardUrl))
     .build();
 }
-
-
