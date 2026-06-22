@@ -1,4 +1,4 @@
-# phishsense
+# Phishsense
 Git Repo For PishSense Senior Design
 
 1. Installation to run Appscript:
